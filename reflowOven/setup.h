@@ -8,7 +8,7 @@
 
 #include "TouchScreen.h"
 
-#include "EEPROM.h"
+// #include "EEPROM.h"
 
 //A0  - Temperature control
 
@@ -42,6 +42,12 @@
 //A6  - LED:2/CDT ?
 //A7  - LED:3
 //RST - RST:External
+
+// #define cFRONT WHITE
+// #define cBACK  BLACK
+extern uint16_t cFRONT;
+extern uint16_t cBACK;
+
 
 #define heat    A0
 
@@ -93,13 +99,43 @@ extern TouchScreen ts;
 #define GREENYELLOW 0xAFE5      /* 173, 255,  47 */
 #define PINK        0xF81F      /* 248,  31, 255 */
 
-#define PROFILE1N "SMD291SNL10"
-#define PROFILE1  {{0,25}, {90,150}, {180,175}, {210,217}, {240,249}, {270,217}}
+#define tSize  2
 
 extern bool isHeatOn;
 
 void heatOn();
 void heatOff();
 
-void EEPROM_put(int start, int length,int size, int *elems);
-int* EEPROM_get(int start, int length, int size);
+// void EEPROM_put(int start, int length,int size, int *elems);
+// int* EEPROM_get(int start, int length, int size);
+
+class Button {
+	public:
+		int x,y,w,h;
+		String text;
+		int txtSize = 2;
+		Button();
+		Button(int,int,int,int,String);
+		void set(int,int,int,int,String);
+		void view();
+		bool isPressed(TSPoint p);
+		void fill(uint16_t color);
+};
+
+class Profile {
+	public:
+		int length;
+		int (*values)[2];
+		String name;
+		Profile(int,int (*)[2],String);
+};
+
+extern Profile profile;
+
+int freeRam();
+
+// void clearProfiles();
+// void addProfile(Profile profile);
+// Profile readProfile(int num);
+// // String readProfileName(int num);
+// void deleteProfile(int num);
