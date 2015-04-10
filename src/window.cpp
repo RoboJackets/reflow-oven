@@ -1,4 +1,4 @@
-#include "windows.h"
+#include "window.h"
 
 #define border 10
 #define bPress 0x0760

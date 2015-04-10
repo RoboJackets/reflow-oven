@@ -3,17 +3,20 @@
 //#include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
-#include "windows.h"
+#include "window.h"
 // #include <EEPROM.h>
 
-void setup() {
-    Serial.begin(9600);
+#define BAUDRATE 9600
+
+int main(){
+
+    Serial.begin(BAUDRATE);
     tft.begin();
     tft.setRotation(1); 
     tft.fillScreen(MAROON);
     isHeatOn = false;
-}
 
-void loop() {
-	mainWindow();
+    while(1){
+        mainWindow();    
+    }
 }

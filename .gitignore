@@ -31,6 +31,3 @@
 # Sublime Project files
 *.sublime-project
 *.sublime-workspace
-
-* Mac Stuff
-*.DS_Store

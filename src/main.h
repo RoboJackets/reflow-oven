@@ -1,13 +1,11 @@
+#pragma once
+
 #include "Arduino.h"
-
 #include "max6675.h"
-
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-
 #include "TouchScreen.h"
-
 // #include "EEPROM.h"
 
 //A0  - Temperature control

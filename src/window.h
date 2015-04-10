@@ -1,3 +1,5 @@
+#pragma once
+
 #include "button.h"
 
 void mainWindow();
