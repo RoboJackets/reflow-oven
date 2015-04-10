@@ -1,10 +1,5 @@
 #include "windows.h"
 
-// TODO: Read profile and sort it by time
-//       Better connection for graph in run()
-//       Find some way to prevent running out of SRAM
-//       Way to store/edit profiles
-
 #define border 10
 #define bPress 0x0760
 
@@ -54,7 +49,6 @@ void mainWindow() {
 	tft.setCursor(graph[0]+3,graph[1]-8);
 	tft.setTextSize(1);
 	tft.println(profile.name);
-
 	
 	graphProfile(graph[0],graph[1],graph[2],graph[3],profile,false);
 
@@ -87,7 +81,7 @@ void mainWindow() {
 		if (p.z > ts.pressureThreshhold) {
 			if (bStart.isPressed(p)) {
 				bStart.fill(bPress);
-				delay(100);
+				delay(100);	// why?
 				start();
 			} else if (bProfiles.isPressed(p)) {
 				bProfiles.fill(bPress);

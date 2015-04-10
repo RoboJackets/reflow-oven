@@ -48,11 +48,8 @@
 extern uint16_t cFRONT;
 extern uint16_t cBACK;
 
-
 #define heat    A0
-
 #define speaker 3
-
 
 extern MAX6675 thermocouple;
 #define thermoDO   4
@@ -127,7 +124,7 @@ class Profile {
 		int length;
 		int (*values)[2];
 		String name;
-		Profile(int,int (*)[2],String);
+		Profile(int, int (*)[2], String&);
 };
 
 extern Profile profile;
