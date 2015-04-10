@@ -1,3 +1,5 @@
+#include "button.h"
+
 Button::Button() {
 }
 
@@ -35,17 +37,4 @@ bool Button::isPressed(TSPoint p) {
 void Button::fill(uint16_t color) {
 	tft.fillRoundRect(x,y,w,h,7,color);
 	view();
-}
-
-Profile::Profile(int l, int (*val)[2], String n) {
-	length = l;
-	// values = (new int *)[2];
-	values = val;
-	name = n;
-}
-
-int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }

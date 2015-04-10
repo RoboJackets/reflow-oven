@@ -3,10 +3,10 @@
 #define border 10
 #define bPress 0x0760
 
-Button bStart;
-Button bProfiles;
-Button bCustom;
-Button bSettings;
+// Button bStart;
+// Button bProfiles;
+// Button bCustom;
+// Button bSettings;
 
 void mainWindow() {
 	tft.fillScreen(cBACK);
@@ -24,15 +24,15 @@ void mainWindow() {
 	int startH = (tft.height()-border*3)*.5;
 	int otherH = (startH-border)*.5;
 
-	// bStart    = Button(border,         border,                bWidth,startH,"START"  );
-	// bProfiles = Button(border,         startH+border*2,       bWidth,otherH,"Profile");
-	// bCustom   = Button(border,         startH+otherH+border*3,bWidth,otherH,"Custom" );
-	// bSettings = Button(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Settings");
+	Button bStart    (border,         border,                bWidth,startH,"START"  );
+	Button bProfiles (border,         startH+border*2,       bWidth,otherH,"Profile");
+	Button bCustom   (border,         startH+otherH+border*3,bWidth,otherH,"Custom" );
+	Button bSettings (border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Settings");
 
-	bStart.set(   border,         border,                bWidth,startH,"START"  );
-	bProfiles.set(border,         startH+border*2,       bWidth,otherH,"Profile");
-	bCustom.set(  border,         startH+otherH+border*3,bWidth,otherH,"Custom" );
-	bSettings.set(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Settings");
+	// bStart.set(   border,         border,                bWidth,startH,"START"  );
+	// bProfiles.set(border,         startH+border*2,       bWidth,otherH,"Profile");
+	// bCustom.set(  border,         startH+otherH+border*3,bWidth,otherH,"Custom" );
+	// bSettings.set(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Settings");
 
 	bStart.view();
 	bProfiles.view();
@@ -82,24 +82,24 @@ void mainWindow() {
 			if (bStart.isPressed(p)) {
 				bStart.fill(bPress);
 				delay(100);	// why?
-				start();
+				start(); return;
 			} else if (bProfiles.isPressed(p)) {
 				bProfiles.fill(bPress);
-				profiles();
+				profiles(); return;
 			} else if (bCustom.isPressed(p)) {
 				bCustom.fill(bPress);
-				custom();
+				custom(); return;
 			} else if (bSettings.isPressed(p)) {
 				bSettings.fill(bPress);
-      			settings();
+      			settings(); return;
       		}
       	}
     }
 }
 
-Button bRestart;
-Button bBack;
-Button bCMode;
+// Button bRestart;
+// Button bBack;
+// Button bCMode;
 
 void settings() {
 	tft.fillScreen(cBACK);
@@ -108,9 +108,9 @@ void settings() {
 	int startH = (tft.height()-border*3)*.5;
 	int otherH = (startH-border)*.5;
 
-	bRestart.set(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Restart");
-	bBack.set(   border,border,bWidth,otherH,"Back");
-	bCMode.set(  bWidth+border*2,startH+border*2,bWidth,otherH,"Color Mode");
+	Button bRestart	(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Restart");
+	Button bBack	(border,border,bWidth,otherH,"Back");
+	Button bCMode	(bWidth+border*2,startH+border*2,bWidth,otherH,"Color Mode");
 
 	bRestart.fill(RED);
 	bBack.view();
@@ -131,27 +131,28 @@ void settings() {
 			} else if (bBack.isPressed(p)) {
 				bBack.fill(bPress);
 				delay(100);
-				mainWindow();
+				// mainWindow();
+				return;
 			} else if (bCMode.isPressed(p)) {
 				bCMode.fill(bPress);
 				uint16_t old = cFRONT;
 				cFRONT = cBACK;
 				cBACK = old;
-				settings();
+				settings(); return;
 			}
 		}
 	}
 }
 
-Button bYes;
-Button bNo;
+// Button bYes;
+// Button bNo;
 
 void start() {
 	int bWidth = 100;
 	int bHeight = 30;
 
-	bYes.set((tft.width()/2  -bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "YES");
-	bNo.set((tft.width()*1.5-bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "NO");
+	Button bYes	((tft.width()/2  -bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "YES");
+	Button bNo	((tft.width()*1.5-bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "NO");
 
 	tft.fillScreen(cBACK);
 
@@ -193,13 +194,14 @@ void start() {
 				}
 			} else if (bNo.isPressed(p)) {
 				bNo.fill(bPress);
-				mainWindow();
+				// mainWindow();
+				return;
 			}
       	}
     }
 }
 
-Button bStop;
+// Button bStop;
 
 void run() {
 	tft.fillScreen(cBACK);
@@ -217,7 +219,7 @@ void run() {
 	int startH = (tft.height()-border*3)*.5;
 	int otherH = (startH-border)*.5;
 
-	bStop.set(border*2+bWidth, startH+otherH+border*3,bWidth,otherH,"STOP");
+	Button bStop (border*2+bWidth, startH+otherH+border*3,bWidth,otherH,"STOP");
 
 	bStop.view();
 
@@ -260,7 +262,8 @@ void run() {
 					if (stopTime > 0 && t-stopTime > .2){
 						bStop.fill(bPress);
 						heatOff();
-						mainWindow();
+						// mainWindow();
+						return;
 					} else {
 						stopTime = t;
 						bStop.text = "Confirm?";
@@ -328,14 +331,15 @@ void run() {
 		if (p.z > ts.pressureThreshhold) {
 			if (bStop.isPressed(p)) {
 				bStop.fill(bPress);
-				mainWindow();
+				// mainWindow();
+				return;
 			}
 		}
 	}
 }
 
-Button bChange;
-Button bAdd;
+// Button bChange;
+// Button bAdd;
 
 void profiles() {
 	int graph [4] = {border*3,border*2,tft.width()-border*5,tft.height()*.6};
@@ -355,8 +359,8 @@ void profiles() {
 	int startH = (tft.height()-border*3)*.5;
 	int otherH = (startH-border)*.5;
 
-	bChange.set(border,         startH+otherH+border*3,bWidth,otherH,"Change");
-	bAdd.set(   border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Add");
+	Button bChange	(border,         startH+otherH+border*3,bWidth,otherH,"Change");
+	Button bAdd		(border*2+bWidth,startH+otherH+border*3,bWidth,otherH,"Add");
 
 	bChange.view();
 	bAdd.view();
@@ -373,11 +377,11 @@ void profiles() {
 				tft.setCursor(tft.width()/2-19*11*.5,tft.height()/2-8);
 				tft.println("NOT IMPLEMENTED YET");
 				delay(1000);
-				profiles();
+				profiles(); return;
 			} else if (bAdd.isPressed(p)) {
       			bAdd.fill(bPress);
 
-      			addProfile();
+      			addProfile(); return;
 
     	   		// tft.fillScreen(GREEN);
 				// tft.setTextSize(2);
@@ -386,7 +390,8 @@ void profiles() {
 				// delay(1000);
 				// profiles();
       		} else if (y<graph[1]+graph[3]) {
-      			mainWindow();
+      			// mainWindow();
+      			return;
       		}
 		}
 	}
@@ -503,12 +508,13 @@ void addProfile() {
 	while (true) {
 		TSPoint p = ts.getPoint();
 		if (p.z>ts.pressureThreshhold) {
-			mainWindow();
+			// mainWindow();
+			return;
 		}
 	}
 }
 
-Button bSwitch;
+// Button bSwitch;
 
 void custom() {
 	tft.fillScreen(cBACK);
@@ -539,8 +545,8 @@ void custom() {
 	// }
 	// tft.println(out);
 
-	bBack.set(border,border,(tft.width()-border*3)*.5,tft.height()/4-border*2,"Back");
-	bSwitch.set(210, 180, 100, 50, "OFF");
+	Button bBack	(border,border,(tft.width()-border*3)*.5,tft.height()/4-border*2,"Back");
+	Button bSwitch	(210, 180, 100, 50, "OFF");
 
 	bBack.view();
 
@@ -589,7 +595,8 @@ void custom() {
 			} else if (bBack.isPressed(p)) {
 				bBack.fill(bPress);
 				delay(200);
-				mainWindow();
+				// mainWindow();
+				return;
 			}
 			// if ((x > 0) && (x < (tft.width()/2))) {
 			// 	mainWindow();

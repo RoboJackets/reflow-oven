@@ -106,33 +106,14 @@ void heatOff();
 // void EEPROM_put(int start, int length,int size, int *elems);
 // int* EEPROM_get(int start, int length, int size);
 
-class Button {
-	public:
-		int x,y,w,h;
-		String text;
-		int txtSize = 2;
-		Button();
-		Button(int,int,int,int,String);
-		void set(int,int,int,int,String);
-		void view();
-		bool isPressed(TSPoint p);
-		void fill(uint16_t color);
-};
-
 class Profile {
 	public:
 		int length;
 		int (*values)[2];
 		String name;
-		Profile(int, int (*)[2], String&);
+		Profile(int, int (*)[2], String);
 };
 
 extern Profile profile;
 
 int freeRam();
-
-// void clearProfiles();
-// void addProfile(Profile profile);
-// Profile readProfile(int num);
-// // String readProfileName(int num);
-// void deleteProfile(int num);

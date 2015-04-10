@@ -1,4 +1,4 @@
-#include "setup.h"
+#include "button.h"
 
 void mainWindow();
 
