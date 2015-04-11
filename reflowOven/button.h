@@ -7,7 +7,7 @@ class Button {
 		int x,y,w,h;
 		String text;
 		int txtSize = 2;
-		Button();
+		// Button();
 		Button(int,int,int,int,String);
 		void set(int,int,int,int,String);
 		void view();

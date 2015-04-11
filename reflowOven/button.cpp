@@ -1,7 +1,5 @@
 #include "button.h"
 
-Button::Button() {
-}
 
 Button::Button(int x1, int y1, int w1, int h1, String text1) {
 	x = x1; y = y1;

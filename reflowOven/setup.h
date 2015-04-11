@@ -8,7 +8,9 @@
 
 #include "TouchScreen.h"
 
-// #include "EEPROM.h"
+
+#define MAX_START_TEMP 100
+
 
 //A0  - Temperature control
 
@@ -43,13 +45,9 @@
 //A7  - LED:3
 //RST - RST:External
 
-// #define cFRONT WHITE
-// #define cBACK  BLACK
-extern uint16_t cFRONT;
-extern uint16_t cBACK;
-
-#define heat    A0
-#define speaker 3
+#define heatUp    A0
+#define heatDown  A5
+#define speaker   3
 
 extern MAX6675 thermocouple;
 #define thermoDO   4
@@ -98,13 +96,25 @@ extern TouchScreen ts;
 
 #define tSize  2
 
-extern bool isHeatOn;
+void heatOn(int val);
+double getTemp();
+// void heatOff();
 
-void heatOn();
-void heatOff();
+int freeRam();
 
-// void EEPROM_put(int start, int length,int size, int *elems);
-// int* EEPROM_get(int start, int length, int size);
+struct ReflowPhase {
+  char* Name;
+  int ExitTemperatureC;
+  int MinDurationS;
+  int MaxDurationS;
+  int TargetDurationS;
+  bool AlarmOnExit;
+};
+
+struct ReflowProfile {
+  char* Name;
+  ReflowPhase Phases[4];
+};
 
 class Profile {
 	public:
@@ -114,6 +124,7 @@ class Profile {
 		Profile(int, int (*)[2], String);
 };
 
+extern int isHeatOn;
 extern Profile profile;
-
-int freeRam();
+extern uint16_t cFRONT;
+extern uint16_t cBACK;
