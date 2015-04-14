@@ -11,7 +11,7 @@ void profiles();
 void custom();
 void settings();
 
-void graphProfile(int x, int y, int w, int h, Profile profile, bool detailed);
+void graphProfile(int x, int y, int w, int h);
 void viewTemp(int x, int y);
 // void keyboard(int x, int y, int w, int h, int r, int c, char (*KB)[11]);
 // char keyboardB(int x, int y, int w, int h,int r, int c, char (*KB)[11], TSPoint p);

@@ -39,9 +39,9 @@ void mainWindow() {
 
 	tft.setCursor(graph[0]+3,graph[1]-8);
 	tft.setTextSize(1);
-	tft.println(profile.name);
+	tft.println(profile.Name);
 	
-	graphProfile(graph[0],graph[1],graph[2],graph[3],profile,false);
+	graphProfile(graph[0],graph[1],graph[2],graph[3]);
 
 	viewTemp(tft.width()/2+border,startH+border*2+otherH/2);
 	int tempOld = getTemp();
@@ -151,6 +151,8 @@ void start() {
 	tft.setCursor(bYes.x,(tft.height()-bYes.y)/2+30);
 	tft.println("Inserted board with components?");
 	tft.setCursor(bYes.x,(tft.height()-bYes.y)/2+40);
+	tft.println("Temperature below " + String(profile.MinStartTemp) + "?");
+	tft.setCursor(bYes.x,(tft.height()-bYes.y)/2+50);
 	tft.println("...(Add more)...");
 
 	bYes.view();
@@ -160,7 +162,7 @@ void start() {
 		TSPoint p = ts.getPoint();
 		if (p.z > ts.pressureThreshhold) {
 			if (bYes.isPressed(p)) {
-				if (getTemp() < 4000) {
+				if (getTemp() < profile.MinStartTemp) {
 					bYes.fill(bPress);
 					run();
 				} else {
@@ -186,136 +188,171 @@ void start() {
     }
 }
 
+// void run() {
+// 	tft.fillScreen(cBACK);
+
+//   	int graph [4] = {border*3,border*2,tft.width()-border*5,tft.height()*.6};
+
+// 	tft.setCursor(graph[0]+3,graph[1]-8);
+// 	tft.setTextSize(1);
+// 	tft.println(profile.Name);
+
+// 	graphProfile(graph[0],graph[1]+graph[3]*.2,graph[2],graph[3]*.8,profile,true);
+// 	tft.drawRect(graph[0],graph[1],graph[2],graph[3],cFRONT);
+
+// 	int bWidth = (tft.width()-border*3)*.5;
+// 	int startH = (tft.height()-border*3)*.5;
+// 	int otherH = (startH-border)*.5;
+
+// 	Button bStop (border*2+bWidth, startH+otherH+border*3,bWidth,otherH,"STOP");
+
+// 	bStop.view();
+
+// 	double maxTemp = profile.values[0][1];
+// 	double maxTime = profile.values[profile.length-1][0];
+// 	for (int i = 1; i<profile.length-1; i++) {
+// 		if (profile.values[i][1]>maxTemp) {
+// 			maxTemp = profile.values[i][1];
+// 		}
+// 	}
+
+
+//   	long timeStart = millis();
+
+//   	for (int i = 0; i<profile.length-1; i++) {
+//   		double time1 = profile.values[i][0];
+//   		double temp1 = profile.values[i][1];
+
+//   		double time2 = profile.values[i+1][0];
+//   		double temp2 = profile.values[i+1][1];
+
+//   		double m = (temp2-temp1)/(time2-time1);
+//   		double b  = temp1 - m*time1;
+
+// 		double t = double(millis()-timeStart)/1000; // seconds;
+// 		double initial = t;
+
+// 		viewTemp(border,startH+otherH+border*3);
+// 		int tempOld = getTemp();
+
+// 		double stopTime = 0;
+
+// 		while (t<time2) {
+// 			// double interval = 0.5; // seconds
+// 			double interval = double(maxTime)/double(graph[2])*.5;
+
+// 			TSPoint p = ts.getPoint();
+// 			if (p.z > ts.pressureThreshhold) {
+// 				if (bStop.isPressed(p)) {
+// 					if (stopTime > 0 && t-stopTime > .2){
+// 						bStop.fill(bPress);
+// 						heatOn(0);
+// 						// mainWindow();
+// 						return;
+// 					} else {
+// 						stopTime = t;
+// 						bStop.text = "Confirm?";
+// 						bStop.fill(bPress);
+// 						delay(200);
+// 						bStop.fill(RED);
+// 					}
+// 				}
+// 			}
+
+// 			if (stopTime > 0 && t-stopTime > 4) {
+// 				stopTime = 0;
+// 				bStop.text = "STOP";
+// 				bStop.fill(bPress);
+// 				delay(200);
+// 				bStop.fill(cBACK);
+// 			}
+
+// 			if (t-initial > interval) {
+// 				double tempSet = t*m+b;
+
+// 				double temp = getTemp();
+// 				if (tempOld != int(temp)) {
+// 					viewTemp(border,startH+otherH+border*3);
+// 					tempOld = temp;
+// 				}
+
+// 				tft.setCursor(border,tft.height()-border-18);
+// 				tft.setTextSize(2);
+// 				tft.println("Goal:");
+// 				tft.fillRect(border+5*6*2,tft.height()-border-18, 5*7*2,8*2,cBACK);
+// 				tft.setCursor(border+5*6*2,tft.height()-border-18);
+// 				tft.println(String(int(tempSet)) + " C");
+
+// 				if (temp < tempSet) {
+// 					heatOn(3);
+// 				} else {
+// 					heatOn(0);
+// 				}
+
+// 				int timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
+// 				tft.drawPixel(timeX,graph[1]+graph[3],RED);
+// 				tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
+
+// 				// TODO: Better connection for graph
+// 				if (getTemp() < 4000 || true) {
+// 					int tempY = map(temp,0,maxTemp,0,graph[3]*.8);
+// 					tempY = graph[1]+graph[3] - tempY;
+// 					tft.drawPixel(timeX,tempY,RED);
+// 				}
+
+// 				initial = t;
+// 			}
+// 			t = double(millis()-timeStart)/1000;
+// 		}
+// 	}
+
+// 	heatOn(0);
+// 	bStop.text = "Done";
+// 	bStop.fill(bPress);
+// 	bStop.fill(cBACK);
+
+// 	while (true) {
+// 		TSPoint p = ts.getPoint();
+// 		if (p.z > ts.pressureThreshhold) {
+// 			if (bStop.isPressed(p)) {
+// 				bStop.fill(bPress);
+// 				// mainWindow();
+// 				return;
+// 			}
+// 		}
+// 	}
+// }
+
 void run() {
-	tft.fillScreen(cBACK);
-
-  	int graph [4] = {border*3,border*2,tft.width()-border*5,tft.height()*.6};
-
-	tft.setCursor(graph[0]+3,graph[1]-8);
-	tft.setTextSize(1);
-	tft.println(profile.name);
-
-	graphProfile(graph[0],graph[1]+graph[3]*.2,graph[2],graph[3]*.8,profile,true);
-	tft.drawRect(graph[0],graph[1],graph[2],graph[3],cFRONT);
-
-	int bWidth = (tft.width()-border*3)*.5;
-	int startH = (tft.height()-border*3)*.5;
-	int otherH = (startH-border)*.5;
-
-	Button bStop (border*2+bWidth, startH+otherH+border*3,bWidth,otherH,"STOP");
-
-	bStop.view();
-
-	double maxTemp = profile.values[0][1];
-	double maxTime = profile.values[profile.length-1][0];
-	for (int i = 1; i<profile.length-1; i++) {
-		if (profile.values[i][1]>maxTemp) {
-			maxTemp = profile.values[i][1];
+	int maxTemp = 0;
+	int maxTime = 0;
+	for (int i = 0; i<profile.Length; i++) {
+		if (maxTemp<profile.Phases[i].ExitTemperatureC) {
+			maxTemp = profile.Phases[i].ExitTemperatureC;
 		}
+		maxTime += profile.Phases[i].TargetDurationS;
 	}
+	maxTime *= 1.5;
 
+	for (int i = 0; i<profile.Length; i++) {
 
-  	long timeStart = millis();
-
-  	for (int i = 0; i<profile.length-1; i++) {
-  		double time1 = profile.values[i][0];
-  		double temp1 = profile.values[i][1];
-
-  		double time2 = profile.values[i+1][0];
-  		double temp2 = profile.values[i+1][1];
-
-  		double m = (temp2-temp1)/(time2-time1);
-  		double b  = temp1 - m*time1;
-
-		double t = double(millis()-timeStart)/1000; // seconds;
-		double initial = t;
-
-		viewTemp(border,startH+otherH+border*3);
-		int tempOld = getTemp();
-
-		double stopTime = 0;
-
-		while (t<time2) {
-			// double interval = 0.5; // seconds
-			double interval = double(maxTime)/double(graph[2])*.5;
-
-			TSPoint p = ts.getPoint();
-			if (p.z > ts.pressureThreshhold) {
-				if (bStop.isPressed(p)) {
-					if (stopTime > 0 && t-stopTime > .2){
-						bStop.fill(bPress);
-						heatOn(0);
-						// mainWindow();
-						return;
-					} else {
-						stopTime = t;
-						bStop.text = "Confirm?";
-						bStop.fill(bPress);
-						delay(200);
-						bStop.fill(RED);
-					}
-				}
-			}
-
-			if (stopTime > 0 && t-stopTime > 4) {
-				stopTime = 0;
-				bStop.text = "STOP";
-				bStop.fill(bPress);
-				delay(200);
-				bStop.fill(cBACK);
-			}
-
-			if (t-initial > interval) {
-				double tempSet = t*m+b;
-
-				double temp = getTemp();
-				if (tempOld != int(temp)) {
-					viewTemp(border,startH+otherH+border*3);
-					tempOld = temp;
-				}
-
-				tft.setCursor(border,tft.height()-border-18);
-				tft.setTextSize(2);
-				tft.println("Goal:");
-				tft.fillRect(border+5*6*2,tft.height()-border-18, 5*7*2,8*2,cBACK);
-				tft.setCursor(border+5*6*2,tft.height()-border-18);
-				tft.println(String(int(tempSet)) + " C");
-
-				if (temp < tempSet) {
-					heatOn(3);
-				} else {
-					heatOn(0);
-				}
-
-				int timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
-				tft.drawPixel(timeX,graph[1]+graph[3],RED);
-				tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
-
-				// TODO: Better connection for graph
-				if (getTemp() < 4000 || true) {
-					int tempY = map(temp,0,maxTemp,0,graph[3]*.8);
-					tempY = graph[1]+graph[3] - tempY;
-					tft.drawPixel(timeX,tempY,RED);
-				}
-
-				initial = t;
-			}
-			t = double(millis()-timeStart)/1000;
+		bool tempUp = true;
+		if (i!=0 && profile.Phases[i-1].ExitTemperatureC>profile.Phases[i].ExitTemperatureC) {
+			tempUp = false;
 		}
-	}
 
-	heatOn(0);
-	bStop.text = "Done";
-	bStop.fill(bPress);
-	bStop.fill(cBACK);
+		long timeStart = millis();
+		while (true) {
+			double temp = getTemp();
 
-	while (true) {
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
-			if (bStop.isPressed(p)) {
-				bStop.fill(bPress);
-				// mainWindow();
-				return;
+			if (millis()-timeStart>profile.Phases[i].MaxDurationS*1000) {
+				break;
+			}
+			if (tempUp && temp>profile.Phases[i].ExitTemperatureC) {
+				break;
+			}
+			if (!tempUp && temp<profile.Phases[i].ExitTemperatureC) {
+				break;
 			}
 		}
 	}
@@ -622,35 +659,27 @@ void custom() {
 	}
 }
 
-
-
-void graphProfile(int x, int y, int w, int h, Profile profile, bool detailed) {
-	double maxTemp = profile.values[0][1];
-	double maxTime = profile.values[profile.length-1][0];
-	for (int i = 1; i<profile.length; i++) {
-		if (profile.values[i][1]>maxTemp) {
-			maxTemp = profile.values[i][1];
+void graphProfile(int x, int y, int w, int h) {
+	int maxTemp = 0;
+	int maxTime = 0;
+	for (int i = 0; i<profile.Length;i++) {
+		if (maxTemp<profile.Phases[i].ExitTemperatureC) {
+			maxTemp = profile.Phases[i].ExitTemperatureC;
 		}
+		maxTime += profile.Phases[i].TargetDurationS;
 	}
 
-	for (int i = 0; i<profile.length-1; i++) {
-		int x1 = map(long(profile.values[i][0]),0,long(maxTime),0,long(w));
-		int y1 = map(long(profile.values[i][1]),0,long(maxTemp),0,long(h));
+	int currentTime = 0;
+	for (int i = 0; i<profile.Length;i++) {
+		int x1 = map(long(currentTime),0,long(maxTime),0,long(w));
+		currentTime += profile.Phases[i].TargetDurationS;
+		int x2 = map(long(currentTime),0,long(maxTime),0,long(w));
 
-		int x2 = map(long(profile.values[i+1][0]),0,long(maxTime),0,long(w));
-		int y2 = map(long(profile.values[i+1][1]),0,long(maxTemp),0,long(h));
-
-		if (detailed) {
-			tft.drawLine(x+x1,y+h-3,x+x1,y+h-y1,DARKGREY); // vertical lines
-			tft.drawLine(x-3,y+h-y1,x+x1,y+h-y1,DARKGREY); // horizontal lines
-
-			if (i==profile.length-2) {
-				tft.drawLine(x-3,y+h-y2,x+x2,y+h-y2,DARKGREY);
-				String temp1 = String(int(profile.values[i+1][1]));
-				tft.setCursor(x-3-temp1.length()*5-3,y+h-y2-8/2+2);
-				tft.println(temp1);
-			}
+		int y1 = 25;
+		if (i!=0) {
+			y1 = map(long(profile.Phases[i-1].ExitTemperatureC),0,long(maxTemp),0,long(h));
 		}
+		int y2 = map(long(profile.Phases[i].ExitTemperatureC),0,long(maxTime),0,long(h));
 
 		tft.drawLine(x+x1,y+h-y1,x+x2-1,y+h-y2,cFRONT);
 
@@ -658,34 +687,27 @@ void graphProfile(int x, int y, int w, int h, Profile profile, bool detailed) {
 		tft.drawLine(x-3,y+h-y1,x+3,y+h-y1,cFRONT);
 
 		tft.setTextColor(cFRONT);
+		
+		if (i==0) {
+			tft.setTextSize(1);
 
-		if (i==0 || detailed) {
-			String time1 = String(int(profile.values[i][0]));
+			String time1 = String(x1);
 			tft.setCursor(x+x1-time1.length()*2.5,y+h+5);
-			tft.setTextSize(1);
 			tft.println(time1);
 
-			String temp1 = String(int(profile.values[i][1]));
+			String temp1 = String(y1);
 			tft.setCursor(x-3-temp1.length()*5-3,y+h-y1-8/2+2);
 			tft.println(temp1);
 		}
-		if (i==profile.length-2) {
-			tft.drawLine(x+x2-1,y+h-3,x+x2-1,y+h+3,cBACK);
-			tft.drawLine(x-3,y+h-y2,x+3,y+h-y2,cFRONT);
-
-			String time1 = String(int(profile.values[i+1][0]));
-			tft.setCursor(x+x2-time1.length()*2.5,y+h+5);
-			tft.setTextSize(1);
-			tft.println(time1);
-		}
-
-		if (profile.values[i][1] == maxTemp) {
-			String temp1 = String(int(profile.values[i][1]));
-			tft.setCursor(x-3-temp1.length()*5-3,y+h-y1-8/2+2);
-			tft.println(temp1);
-		}
-
 	}
+
+	String time1 = String(maxTime);
+	tft.setCursor(x+w-time1.length()*2.5,y+h+5);
+	tft.println(time1);
+
+	String temp1 = String(maxTemp);
+	tft.setCursor(x-3-temp1.length()*5-3,y-8/2+2);
+	tft.println(temp1);
 }
 
 void viewTemp(int x, int y) {

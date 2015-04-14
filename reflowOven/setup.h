@@ -12,7 +12,8 @@
 #define MAX_START_TEMP 100
 
 
-//A0  - Temperature control
+//A0  - Temperature Up control
+//A5  - Temperature Down control
 
 //MAX6675
 ///////////
@@ -98,7 +99,6 @@ extern TouchScreen ts;
 
 void heatOn(int val);
 double getTemp();
-// void heatOff();
 
 int freeRam();
 
@@ -113,18 +113,14 @@ struct ReflowPhase {
 
 struct ReflowProfile {
   char* Name;
+  int MinStartTemp;
+  int Length;
   ReflowPhase Phases[4];
 };
 
-class Profile {
-	public:
-		int length;
-		int (*values)[2];
-		String name;
-		Profile(int, int (*)[2], String);
-};
 
 extern int isHeatOn;
-extern Profile profile;
+extern long lastHeat;
+extern ReflowProfile profile;
 extern uint16_t cFRONT;
 extern uint16_t cBACK;
