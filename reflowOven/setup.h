@@ -10,6 +10,7 @@
 
 
 #define MAX_START_TEMP 100
+#define HEAT_UP_TIME   20
 
 
 //A0  - Temperature Up control
@@ -120,7 +121,7 @@ struct ReflowProfile {
 
 
 extern int isHeatOn;
-extern long lastHeat;
+// extern long lastHeat;
 extern ReflowProfile profile;
 extern uint16_t cFRONT;
 extern uint16_t cBACK;

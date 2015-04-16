@@ -4,6 +4,10 @@
 #define bPress 0x0760
 
 
+//int bWidth = (tft.width()-border*3)*.5;
+//int startH = (tft.height()-border*3)*.5;
+//int otherH = (startH-border)*.5;
+
 void mainWindow() {
 	tft.fillScreen(cBACK);
 
@@ -133,11 +137,11 @@ void settings() {
 
 
 void start() {
-	int bWidth = 100;
-	int bHeight = 30;
+	int bWidth1 = 100;
+	int bHeight1 = 30;
 
-	Button bYes	((tft.width()/2  -bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "YES");
-	Button bNo	((tft.width()*1.5-bWidth)/2, (tft.height()-bHeight)*.75, bWidth, bHeight, "NO");
+	Button bYes	((tft.width()/2  -bWidth1)/2, (tft.height()-bHeight1)*.75, bWidth1, bHeight1, "YES");
+	Button bNo	((tft.width()*1.5-bWidth1)/2, (tft.height()-bHeight1)*.75, bWidth1, bHeight1, "NO");
 
 	tft.fillScreen(cBACK);
 
@@ -334,6 +338,28 @@ void run() {
 	}
 	maxTime *= 1.5;
 
+	int graph [4] = {border*3,border*2,tft.width()-border*5,tft.height()*.6};
+
+	tft.setCursor(graph[0]+3,graph[1]-8);
+	tft.setTextSize(1);
+	tft.println(profile.Name);
+
+	tft.drawRect(graph[0],graph[1],graph[2],graph[3],cFRONT);
+
+	int bWidth = (tft.width()-border*3)*.5;
+	int startH = (tft.height()-border*3)*.5;
+	int otherH = (startH-border)*.5;
+
+	// tft.height()/2 - border*3/2 + tft.height()/4 + 
+	Button bStop (border*2+bWidth, startH+otherH+border*3,bWidth,otherH,"STOP");
+
+	bStop.view();
+
+	double interval = double(maxTime)/double(graph[2])*.5;
+
+	double lOsc = millis();
+	double tOsc = 0;
+
 	for (int i = 0; i<profile.Length; i++) {
 
 		bool tempUp = true;
@@ -341,9 +367,98 @@ void run() {
 			tempUp = false;
 		}
 
+		// print phase name
+
 		long timeStart = millis();
+
+		double t = double(millis()-timeStart)/1000; // seconds;
+		double initial = t;
+
+		viewTemp(border,startH+otherH+border*3);
+		int tempOld = getTemp();
+
+		double stopTime = 0;
+
+		int timeX;
 		while (true) {
 			double temp = getTemp();
+
+			TSPoint p = ts.getPoint();
+			if (p.z > ts.pressureThreshhold) {
+				if (bStop.isPressed(p)) {
+					if (stopTime > 0 && t-stopTime > .2){
+						bStop.fill(bPress);
+						heatOn(0);
+						// mainWindow();
+						return;
+					} else {
+						stopTime = t;
+						bStop.text = "Confirm?";
+						bStop.fill(bPress);
+						delay(200);
+						bStop.fill(RED);
+					}
+				}
+			}
+
+			if (stopTime > 0 && t-stopTime > 4) {
+				stopTime = 0;
+				bStop.text = "STOP";
+				bStop.fill(bPress);
+				delay(200);
+				bStop.fill(cBACK);
+			}
+
+
+			if (t-initial > interval) {
+				double tempSet = 0; // ???
+				// Fix heating
+
+				if (millis()-lOsc>tOsc*1000) {
+					if (isHeatOn==0) {
+						heatOn(3);
+					} else {
+						heatOn(0);
+					}
+					lOsc = millis();
+				}
+
+
+				// if (temp < tempSet) {
+				// 	heatOn(3);
+				// } else {
+				// 	heatOn(0);
+				// }
+
+
+				double temp = getTemp();
+				if (tempOld != int(temp)) {
+					viewTemp(border,startH+otherH+border*3);
+					tempOld = temp;
+				}
+
+				tft.setCursor(border,tft.height()-border-18);
+				tft.setTextSize(2);
+				tft.println("Goal:");
+				tft.fillRect(border+5*6*2,tft.height()-border-18, 5*7*2,8*2,cBACK);
+				tft.setCursor(border+5*6*2,tft.height()-border-18);
+				tft.println(String(int(tempSet)) + " C");
+
+				timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
+				tft.drawPixel(timeX,graph[1]+graph[3],RED);
+				tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
+
+				// TODO: Better connection for graph
+				if (getTemp() < 4000 || true) {
+					int tempY = map(temp,0,maxTemp,0,graph[3]*.8);
+					tempY = graph[1]+graph[3] - tempY;
+					tft.drawPixel(timeX,tempY,RED);
+				}
+
+				initial = t;
+			}
+			t = double(millis()-timeStart)/1000;
+
 
 			if (millis()-timeStart>profile.Phases[i].MaxDurationS*1000) {
 				break;
@@ -355,11 +470,23 @@ void run() {
 				break;
 			}
 		}
+
+		tft.drawLine(timeX,graph[1],timeX,graph[1]+graph[3],cFRONT);
+	}
+
+	while (true) {
+		TSPoint p = ts.getPoint();
+		if (p.z > ts.pressureThreshhold) {
+			if (bStop.isPressed(p)) {
+				bStop.fill(bPress);
+				// mainWindow();
+				return;
+			}
+		}
 	}
 }
 
 void profiles() {
-	
 }
 
 // void profiles() {
@@ -631,21 +758,27 @@ void custom() {
 					bSwitchU.text = "ON";
 					bSwitchU.fill(RED);
 					isHeatOn += 1;
+                                        heatOn(isHeatOn);
 				} else {
 					bSwitchU.text = "OFF";
 					bSwitchU.fill(GREEN);
 					isHeatOn -= 1;
+                                        heatOn(isHeatOn);
 				}
+				delay(500);
 			} else if (bSwitchD.isPressed(p)) {
 				if (isHeatOn==0 || isHeatOn==1) {
 					bSwitchD.text = "ON";
 					bSwitchD.fill(RED);
 					isHeatOn += 2;
+                                        heatOn(isHeatOn);
 				} else {
 					bSwitchD.text = "OFF";
 					bSwitchD.fill(GREEN);
 					isHeatOn -= 2;
+                                        heatOn(isHeatOn);
 				}
+				delay(500);
 			} else if (bBack.isPressed(p)) {
 				bBack.fill(bPress);
 				delay(200);
