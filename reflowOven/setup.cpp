@@ -13,13 +13,14 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 ReflowProfile profile = 
 {
-	"SMD291SNL10", 80, 4,
+	"SMD291SNL10", 80, 5,
 	{
 		//   Zone      Exit(C)   Min(S)  Max(S)  Tgt(S)  Alarm
 		{ "Pre-heat",     150,       0,      0,     90,  false },
 		{ "Soak",         217,      60,     90,     80,  false },
 		{ "Liquidus",     240,      15,     30,     20,  false },
-		{ "Reflow",       217,      15,     30,     20,  true }
+		{ "Reflow",       217,      15,     30,     20,  true  },
+		{ "Cooling",      80,        0,      0,     80,  true  },
     }
 };
 
@@ -35,17 +36,17 @@ uint16_t cFRONT = WHITE;
 uint16_t cBACK = BLACK;
 
 void heatOn(int val) {
-	if (isHeatOn==0) {
-		tHeat -= double(millis()-lastHeat)/1000;
-	} else {
-		tHeat += double(millis()-lastHeat)/1000;
-	}
-	if (tHeat<0) {
-		tHeat = 0;
-	} else if (tHeat>HEAT_UP_TIME) {
-		tHeat = HEAT_UP_TIME;
-	}
-	lastHeat = millis();
+	// if (isHeatOn==0) {
+	// 	tHeat -= double(millis()-lastHeat)/1000;
+	// } else {
+	// 	tHeat += double(millis()-lastHeat)/1000;
+	// }
+	// if (tHeat<0) {
+	// 	tHeat = 0;
+	// } else if (tHeat>HEAT_UP_TIME) {
+	// 	tHeat = HEAT_UP_TIME;
+	// }
+	// lastHeat = millis();
 
 	isHeatOn = val;
 	if (val==0) {
@@ -65,23 +66,45 @@ void heatOn(int val) {
 
 double getTemp() {
 
-	// Works for temps from 0 C to 320 C
-	// (0,0)	(100,118)	(200,227)	(320,320)
-	// [-3.068e-6	+5e-4		+1.1636]
-	// (0,0)	(118,100)	(227,185)	(320,320)
-	// [+4.8e-6		-1.3e-3		+0.9398]
+	// if (isHeatOn==0) {
+	// 	tHeat -= double(millis()-lastHeat)/1000;
+	// } else {
+	// 	tHeat += double(millis()-lastHeat)/1000 * .4;
+	// }
+	// if (tHeat<0) {
+	// 	tHeat = 0;
+	// } else if (tHeat>HEAT_UP_TIME) {
+	// 	tHeat = HEAT_UP_TIME;
+	// }
+	// lastHeat = millis();
 
-	double t = thermocouple.readCelsius();
+	// // Works for temps from 0 C to 320 C
+	// // (0,0)	(100,118)	(200,227)	(320,320)
+	// // [-3.068e-6	+5e-4		+1.1636]
+	// // (0,0)	(118,100)	(227,185)	(320,320)
+	// // [+4.8e-6		-1.3e-3		+0.9398]
 
-	double heatU = -3.069e-6*pow(t,3) + 5e-4*pow(t,2) + 1.1536*t;
-	// heat += map(heat-t,0,tHeat,0,heat-t);
-	double heatD = 4.8e-6*pow(t,3) + -1.3e-3*pow(t,2) + 0.9398*t;
-	// heat += map(heat-t,0,tHeat,0,heat-t);
+	// double t = thermocouple.readCelsius();
 
-	// double diff = map(heatU-heatD,0,tHeat,0,heat-t);
-	double diff = map(tHeat,0,HEAT_UP_TIME,0,heatU-heatD);
+	// double heatU = -3.069e-6*pow(t,3) + 5e-4*pow(t,2) + 1.1536*t;
+	// // heat += map(heat-t,0,tHeat,0,heat-t);
+	// double heatD = 4.8e-6*pow(t,3) + -1.3e-3*pow(t,2) + 0.9398*t;
+	// // heat += map(heat-t,0,tHeat,0,heat-t);
 
-	return heatU - diff;
+	// // double diff = map(heatU-heatD,0,tHeat,0,heat-t);
+	// double diff = map(tHeat,0,HEAT_UP_TIME,0,heatU-heatD);
+
+	// Serial.print(heatU);
+	// Serial.print(" - ");
+	// Serial.print(heatD);
+	// Serial.print(" : ");
+	// Serial.print(diff);
+	// Serial.print(":");
+	// Serial.println(tHeat);
+	// Serial.println(t);
+
+	return thermocouple.readCelsius()*1.0944 - 20.506; 
+	// return heatD + diff;
 
 	// double diff = map(heat-t,0,tHeat,0,heat-t);
 	// if ((millis()-lastHeat)/1000 < 20) {

@@ -9,8 +9,8 @@
 #include "TouchScreen.h"
 
 
-#define MAX_START_TEMP 100
-#define HEAT_UP_TIME   20
+#define MAX_START_TEMP 80
+#define HEAT_UP_TIME   15
 
 
 //A0  - Temperature Up control
@@ -42,7 +42,6 @@
 //D03 - Speaker
 //TX1 - Serial
 //RX0 - Serial
-//A5  - LED:1
 //A6  - LED:2/CDT ?
 //A7  - LED:3
 //RST - RST:External
@@ -116,7 +115,7 @@ struct ReflowProfile {
   char* Name;
   int MinStartTemp;
   int Length;
-  ReflowPhase Phases[4];
+  ReflowPhase Phases[5];
 };
 
 
