@@ -127,6 +127,12 @@ void settings() {
 }
 
 void start() {
+	// Serial.println(getTemp());
+	// delay(1000);
+	// Serial.println(getTemp());
+	// delay(1000);
+	// Serial.println(getTemp());
+
 	tft.fillScreen(cBACK);
 
 	// Display Buttons
@@ -155,7 +161,7 @@ void start() {
 			if (bYes.isPressed(p)) {
 				if (getTemp() < profile.MinStartTemp) {
 					bYes.fill(bPress);
-					run();
+					run(); return;
 				} else {
 					// Display run error
 					bYes.fill(RED);
@@ -172,7 +178,7 @@ void start() {
 					
 					tft.setTextColor(cFRONT);
 					delay(1000);
-					tft.fillRect(bYes.x,bYes.y+bYes.h+border,22*10,16,cBACK);
+					tft.fillRect(bYes.x,bYes.y+bYes.h+border,26*10,16,cBACK);
 
 					run(); // Remove when not testing
 					return;
@@ -217,12 +223,7 @@ void run() {
 	tft.drawRect(graph[0],graph[1],graph[2],graph[3],cFRONT);
 
 
-	double interval = .5; // Update interval in ms
-
-	// double lOsc = millis(); // Time since last swifch
-	// double tOscOn = 0; // Time on for oscillation
-	// double tOscOff = 1; // Time off for oscillation
-
+	double interval = 1; // Update interval in s
 
 	double timeStart = millis();
 	int sumTime = 0;
@@ -230,20 +231,35 @@ void run() {
 	// Pre-heat stage
 	heatOn(3);
 	double t = double(millis()-timeStart)/1000;
+	double initial = t;
+
 	while (true) {
-		int timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
-		int tempY = graph[1]+graph[3] - map(getTemp(),0,maxTemp,0,graph[3]*.8);
+		if (t-initial>interval) {
+			double temp = getTemp();
 
-		tft.drawPixel(timeX,graph[1]+graph[3],RED);
-		tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
+			int timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
+			int tempY = graph[1]+graph[3] - map(temp,0,maxTemp,0,graph[3]*.8);
 
-		tft.drawPixel(timeX,map(profile.Phases[0].ExitTemperatureC,0,maxTemp,0,graph[3]*.8),RED);
-		tft.drawPixel(timeX,tempY,RED);
+			tft.drawPixel(timeX,graph[1]+graph[3],RED);
+			tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
+
+			tft.drawPixel(timeX,graph[1]+graph[3]-map(profile.Phases[0].ExitTemperatureC,0,maxTemp,0,graph[3]*.8),LIGHTGREY);
+			tft.drawPixel(timeX,tempY,RED);
+
+			Serial.println(timeX);
+			Serial.println(tempY);
+			Serial.println(temp);
+			Serial.println("");
+			initial = t;
+
+			if (temp>profile.Phases[0].ExitTemperatureC-6) {
+				break;
+			}
+		}
+
 
 		t = double(millis()-timeStart)/1000;
-		if (getTemp()>profile.Phases[0].ExitTemperatureC-10) {
-			break;
-		}
+		
 	}
 	heatOn(0);
 	sumTime += t;
@@ -266,7 +282,13 @@ void run() {
 		double m = (temp2-temp1)/(time2-time1);
   		double b  = temp1 - m*time1;
 
-  		tft.drawLine(time1,temp1,time2,temp2,cFRONT);
+  		int x1 = map(time1,0,maxTime,graph[0],graph[0]+graph[2]);
+  		int x2 = map(time2,0,maxTime,graph[0],graph[0]+graph[2]);
+
+  		int y1 = map(temp1,0,maxTemp,0,graph[3]*.8);
+  		int y2 = map(temp2,0,maxTemp,0,graph[3]*.8);
+
+  		tft.drawLine(x1,graph[1]+graph[3]-y1,x2,graph[1]+graph[3]-y2,cFRONT);
 
 		viewTemp(border,startH+otherH+border*3);
 		int tempOld = getTemp();
@@ -275,9 +297,9 @@ void run() {
 		double stopTime = 0;
 		double initial = t;
 
-		while (true) {
-			double temp = getTemp();
+		while (t<time2) {
 
+			// Check for button update
 			TSPoint p = ts.getPoint();
 			if (p.z > ts.pressureThreshhold) {
 				if (bStop.isPressed(p)) {
@@ -307,13 +329,23 @@ void run() {
 				double tempSet = m*t+b;
 				double temp = getTemp();
 
-				double error = temp = tempSet;
+				double error = temp - tempSet;
 				double dErr = (errLast-error)/interval;
 
 				// TODO: Fix heating
-				if (temp+dErr*2 < tempSet) {
+				if (temp-dErr*4-6 < tempSet) {
 					heatOn(3);
 				} else {
+					heatOn(0);
+				}
+
+				// Force heatup for reflow
+				if (i==2 || (i==1 && t>time2-20)){
+					heatOn(3);
+				}
+
+				// Force heatoff for cooldown
+				if ((i==3 && t>time1) || i==4) {
 					heatOn(0);
 				}
 
@@ -348,6 +380,9 @@ void run() {
 			}
 			t = double(millis()-timeStart)/1000;
 		}
+		if (profile.Phases[i].AlarmOnExit) {
+			tone(speaker,60,1000);
+		}
 	}
 
 	heatOn(0);
@@ -373,8 +408,8 @@ void custom() {
 	tft.fillScreen(cBACK);
 
 	Button bBack	(border,border,(tft.width()-border*3)*.5,tft.height()/4-border*2,"Back");
-	Button bSwitchU	(210, 180, 100, 50, "OFF");
-	Button bSwitchD	(100, 180, 100, 50, "OFF");
+	Button bSwitchD	(210, 180, 100, 50, "OFF");
+	Button bSwitchU	(100, 180, 100, 50, "OFF");
 
 	bBack.view();
 
@@ -394,8 +429,13 @@ void custom() {
 		bSwitchD.fill(GREEN);
 	}
 
+	tft.setTextSize(1);
+	tft.setCursor(bSwitchU.x,bSwitchU.y-10);
+	tft.println("Heat Upper");
+	tft.setCursor(bSwitchD.x,bSwitchD.y-10);
+	tft.println("Heat Bottom");
 
-	viewTemp(bSwitchD.x,bSwitchD.y-60);
+	viewTemp(bSwitchU.x,bSwitchU.y-60);
 	int tempOld = getTemp();
 
 	long previousMillis = 0;
@@ -408,11 +448,11 @@ void custom() {
    			previousMillis = currentMillis;
    			int tempNew = getTemp();
    			if (tempOld != tempNew) {
-				viewTemp(bSwitchD.x,bSwitchD.y-60);
+				viewTemp(bSwitchU.x,bSwitchU.y-60);
 				tempOld = tempNew;
-				tft.setCursor(bSwitchD.x,bSwitchD.y-30);
-				tft.fillRect(bSwitchD.x,bSwitchD.y-30,40,20,cBACK);
-				tft.println(thermocouple.readCelsius());
+				// tft.setCursor(bSwitchD.x,bSwitchD.y-30);
+				// tft.fillRect(bSwitchD.x,bSwitchD.y-30,40,20,cBACK);
+				// tft.println(thermocouple.readCelsius());
 			}
 		}
 

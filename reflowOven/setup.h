@@ -8,6 +8,7 @@
 
 #include "TouchScreen.h"
 
+#pragma once
 
 #define MAX_START_TEMP 80
 #define HEAT_UP_TIME   15
@@ -46,8 +47,8 @@
 //A7  - LED:3
 //RST - RST:External
 
-#define heatUp    A0
-#define heatDown  A5
+#define heatUp    A5
+#define heatDown  A0
 #define speaker   3
 
 extern MAX6675 thermocouple;
