@@ -121,7 +121,8 @@ struct ReflowProfile {
 
 
 extern int isHeatOn;
-// extern long lastHeat;
+extern ReflowProfile profile1;
+extern ReflowProfile profile2;
 extern ReflowProfile profile;
 extern uint16_t cFRONT;
 extern uint16_t cBACK;

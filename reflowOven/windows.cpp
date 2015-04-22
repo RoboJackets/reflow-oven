@@ -127,12 +127,6 @@ void settings() {
 }
 
 void start() {
-	// Serial.println(getTemp());
-	// delay(1000);
-	// Serial.println(getTemp());
-	// delay(1000);
-	// Serial.println(getTemp());
-
 	tft.fillScreen(cBACK);
 
 	// Display Buttons
@@ -180,7 +174,7 @@ void start() {
 					delay(1000);
 					tft.fillRect(bYes.x,bYes.y+bYes.h+border,26*10,16,cBACK);
 
-					run(); // Remove when not testing
+					// run(); // Remove when not testing
 					return;
 				}
 			} else if (bNo.isPressed(p)) {
@@ -233,48 +227,28 @@ void run() {
 	double t = double(millis()-timeStart)/1000;
 	double initial = t;
 
-	while (true) {
-		if (t-initial>interval) {
-			double temp = getTemp();
-
-			int timeX = map(t,0,maxTime,graph[0],graph[0]+graph[2]);
-			int tempY = graph[1]+graph[3] - map(temp,0,maxTemp,0,graph[3]*.8);
-
-			tft.drawPixel(timeX,graph[1]+graph[3],RED);
-			tft.drawPixel(timeX,graph[1]+graph[3]-2,RED);
-
-			tft.drawPixel(timeX,graph[1]+graph[3]-map(profile.Phases[0].ExitTemperatureC,0,maxTemp,0,graph[3]*.8),LIGHTGREY);
-			tft.drawPixel(timeX,tempY,RED);
-
-			Serial.println(timeX);
-			Serial.println(tempY);
-			Serial.println(temp);
-			Serial.println("");
-			initial = t;
-
-			if (temp>profile.Phases[0].ExitTemperatureC-6) {
-				break;
-			}
-		}
-
-
-		t = double(millis()-timeStart)/1000;
-		
-	}
-	heatOn(0);
-	sumTime += t;
-
 	double errLast = 0;
 
 	// Cycle through other stages
-	for (int i = 1; i<profile.Length; i++) {
+	for (int i = 0; i<profile.Length; i++) {
 
-		//TODO: print phase name
+		//Print phase name
+		tft.setTextSize(1);
+		tft.fillRect(border,tft.height()-border-8, 5*10,8,cBACK);
+		tft.setCursor(border,tft.height()-border-8);
+		tft.println(profile.Phases[i].Name);
 
+		// Calculate goal temp eqn
 		double time1 = sumTime;
-		double temp1 = profile.Phases[i-1].ExitTemperatureC;
+		double temp1;
+		if (i!=0) {
+			temp1 = profile.Phases[i-1].ExitTemperatureC;
 
-		sumTime += profile.Phases[i].TargetDurationS;
+			sumTime += profile.Phases[i].TargetDurationS;
+		} else {
+			time1 = -1;
+			temp1 = 0;
+		}
 
 		double time2 = sumTime;
 		double temp2 = profile.Phases[i].ExitTemperatureC;
@@ -288,7 +262,9 @@ void run() {
   		int y1 = map(temp1,0,maxTemp,0,graph[3]*.8);
   		int y2 = map(temp2,0,maxTemp,0,graph[3]*.8);
 
-  		tft.drawLine(x1,graph[1]+graph[3]-y1,x2,graph[1]+graph[3]-y2,cFRONT);
+  		if (i!=0) {
+  			tft.drawLine(x1,graph[1]+graph[3]-y1,x2,graph[1]+graph[3]-y2,cFRONT);
+  		}
 
 		viewTemp(border,startH+otherH+border*3);
 		int tempOld = getTemp();
@@ -298,7 +274,6 @@ void run() {
 		double initial = t;
 
 		while (t<time2) {
-
 			// Check for button update
 			TSPoint p = ts.getPoint();
 			if (p.z > ts.pressureThreshhold) {
@@ -332,7 +307,6 @@ void run() {
 				double error = temp - tempSet;
 				double dErr = (errLast-error)/interval;
 
-				// TODO: Fix heating
 				if (temp-dErr*4-6 < tempSet) {
 					heatOn(3);
 				} else {
@@ -340,7 +314,7 @@ void run() {
 				}
 
 				// Force heatup for reflow
-				if (i==2 || (i==1 && t>time2-20)){
+				if (i==2 || (i==1 && t>time2-20) || i==0){
 					heatOn(3);
 				}
 
@@ -355,11 +329,11 @@ void run() {
 					tempOld = temp;
 				}
 
-				tft.setCursor(border,tft.height()-border-18);
-				tft.setTextSize(2);
+				tft.setCursor(border,tft.height()-border-8);
+				tft.setTextSize(1);
 				tft.println("Goal:");
-				tft.fillRect(border+5*6*2,tft.height()-border-18, 5*7*2,8*2,cBACK);
-				tft.setCursor(border+5*6*2,tft.height()-border-18);
+				tft.fillRect(border+5*6*2,tft.height()-border-8, 5*7,8,cBACK);
+				tft.setCursor(border+5*6*2,tft.height()-border-8);
 				tft.println(String(int(tempSet)) + " C");
 
 
@@ -375,10 +349,21 @@ void run() {
 					tft.drawPixel(timeX,tempY,RED);
 				}
 
+				// For heating up stage
+				if (i==0) {
+					tft.drawPixel(timeX,graph[1]+graph[3]-map(profile.Phases[0].ExitTemperatureC,0,maxTemp,0,graph[3]*.8),LIGHTGREY);
+					if (temp>profile.Phases[0].ExitTemperatureC-6) {
+						break;
+					}
+				}
+
 				errLast = error;
 				initial = t;
 			}
 			t = double(millis()-timeStart)/1000;
+			if (i==0) {
+				sumTime += t;
+			}
 		}
 		if (profile.Phases[i].AlarmOnExit) {
 			tone(speaker,60,1000);
@@ -402,6 +387,24 @@ void run() {
 }
 
 void profiles() {
+	int otherH = (tft.height()-5*border)/4;
+
+	Button bProfile1 (border,border         ,tft.width()-border*2,otherH,profile1.Name);
+	Button bProfile2 (border,otherH+border*2,tft.width()-border*2,otherH,profile2.Name);
+
+	// Change ReflowProfile profile to selected profile
+	while (true) {
+		TSPoint p = ts.getPoint();
+		if (p.z > ts.pressureThreshhold) {
+			if (bProfile1.isPressed(p)) {
+				profile = profile1;
+				return;
+			} else if (bProfile2.isPressed(p)) {
+				profile = profile2;
+				return;
+			} 
+      	}
+	}
 }
 
 void custom() {
@@ -444,20 +447,18 @@ void custom() {
 	while (true) {
 		unsigned long currentMillis = millis();
 
+		// Update temperature
 		if(currentMillis - previousMillis > interval) {
    			previousMillis = currentMillis;
    			int tempNew = getTemp();
    			if (tempOld != tempNew) {
 				viewTemp(bSwitchU.x,bSwitchU.y-60);
 				tempOld = tempNew;
-				// tft.setCursor(bSwitchD.x,bSwitchD.y-30);
-				// tft.fillRect(bSwitchD.x,bSwitchD.y-30,40,20,cBACK);
-				// tft.println(thermocouple.readCelsius());
 			}
 		}
 
+		// Check for button presses
 		TSPoint p = ts.getPoint();
-
 		if (p.z > 10 && p.z < 1000)
 		{   
 			if (bSwitchU.isPressed(p)) {
@@ -492,6 +493,7 @@ void custom() {
 }
 
 void graphProfile(int x, int y, int w, int h) {
+	// Find max time and temp
 	int maxTemp = 0;
 	int maxTime = 0;
 	for (int i = 0; i<profile.Length;i++) {
@@ -502,6 +504,7 @@ void graphProfile(int x, int y, int w, int h) {
 	}
 
 	int currentTime = 0;
+	// Loop through profile phases
 	for (int i = 0; i<profile.Length;i++) {
 		int x1 = map(long(currentTime),0,long(maxTime),0,long(w));
 		currentTime += profile.Phases[i].TargetDurationS;
@@ -513,6 +516,7 @@ void graphProfile(int x, int y, int w, int h) {
 		}
 		int y2 = map(long(profile.Phases[i].ExitTemperatureC),0,long(maxTemp),0,long(h));
 
+		// Draw phase line & vertical/horizontal lines
 		tft.drawLine(x+x1,y+h-y1,x+x2-1,y+h-y2,cFRONT);
 
 		tft.drawLine(x+x1,y+h-3,x+x1,y+h+3,cFRONT);
@@ -543,6 +547,7 @@ void graphProfile(int x, int y, int w, int h) {
 }
 
 void viewTemp(int x, int y) {
+	// Update temp at x,y with size 2
 	tft.setCursor(x,y);
 	tft.setTextSize(2);
 	tft.println("Temp:");

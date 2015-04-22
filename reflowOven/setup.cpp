@@ -6,9 +6,10 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
+ReflowProfile profile = profile1;
 
 
-ReflowProfile profile = 
+ReflowProfile profile1 = 
 {
 	"SMD291SNL10", 80, 5,
 	{
@@ -21,6 +22,18 @@ ReflowProfile profile =
     }
 };
 
+ReflowProfile profile2 = 
+{
+	"TEST", 80, 5,
+	{
+		//   Zone      Exit(C)   Min(S)  Max(S)  Tgt(S)  Alarm
+		{ "Pre-heat",     150,       0,      0,     90,  false },
+		{ "Soak",         217,      60,     90,    100,  false },
+		{ "Liquidus",     250,      15,     30,     20,  false },
+		{ "Reflow",       217,      15,     30,     20,  true  },
+		{ "Cooling",      25,        0,      0,     90,  true  },
+    }
+};
 
 int isHeatOn = 0;
 long lastHeat = millis();
@@ -31,18 +44,20 @@ uint16_t cBACK = BLACK;
 
 void heatOn(int val) {
 	isHeatOn = val;
-	if (val==0) {
-		digitalWrite(heatUp, LOW);
-		digitalWrite(heatDown, LOW);
-	} else if (val==1) {
-		digitalWrite(heatUp,LOW);
-		digitalWrite(heatDown,HIGH);
-	} else if (val==2) {
-		digitalWrite(heatUp, HIGH);
-		digitalWrite(heatDown,LOW);
-	} else if (val==3) {
-		digitalWrite(heatUp, HIGH);
+	
+	// 0 - heat off
+	// 1 - bottom only
+	// 2 - top only
+	// 3 both on
+	if (val==1 || val==3) {
 		digitalWrite(heatDown, HIGH);
+	} else {
+		digitalWrite(heatDown,LOW);
+	}
+	if (val==2 || val==3) {
+		digitalWrite(heatUp, HIGH);
+	} else {
+		digitalWrite(heatUp,LOW);
 	}
 }
 
