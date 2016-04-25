@@ -7,3 +7,6 @@
 [submodule "external/MAX6675-library"]
 	path = external/MAX6675-library
 	url = https://github.com/adafruit/MAX6675-library.git
+[submodule "external/Touch-Screen-Library"]
+	path = external/Touch-Screen-Library
+	url = https://github.com/adafruit/Touch-Screen-Library.git
