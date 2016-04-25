@@ -9,7 +9,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 ReflowProfile profile = profile11;
 
 
-//ReflowProfile profile1 = 
+//ReflowProfile profile1 =
 //{
 //	"SMD291SNL10", 80, 5,
 //	{
@@ -27,8 +27,8 @@ ReflowProfile profile11 =
      "SMD291SNL10", 80, 6,
      {
          //   Zone      Exit(C)   Min(S)  Max(S)  Tgt(S)  Alarm
-         { "Pre-heat",     140,       0,      0,     90,  false },
-         { "Pre-heat-2",   140,      90,    110,    100,  false }, 
+         { "Pre-heat",     130,       0,      0,     70,  false },
+         { "Pre-heat-2",   140,      70,    100,     80,  false },
          { "Soak",         217,      60,     90,     80,  false },
          { "Liquidus",     240,      15,     30,     20,  false },
          { "Reflow",       217,      15,     30,     20,  true  },
@@ -37,7 +37,7 @@ ReflowProfile profile11 =
  };
 
 
-//ReflowProfile profile2 = 
+//ReflowProfile profile2 =
 //{
 //	"TEST", 80, 5,
 //	{
@@ -59,7 +59,7 @@ uint16_t cBACK = BLACK;
 
 void heatOn(int val) {
 	isHeatOn = val;
-	
+
 	// 0 - heat off
 	// 1 - bottom only
 	// 2 - top only
@@ -78,12 +78,12 @@ void heatOn(int val) {
 
 double getTemp() {
 	// Calibration for thin thermocouple
-	return thermocouple.readCelsius()*1.0944 - 20.506; 
+	return thermocouple.readCelsius()*1.0944 - 20.506;
 }
 
 
-int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
-}
+// int freeRam () {
+//   extern int __heap_start, *__brkval;
+//   int v;
+//   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+// }

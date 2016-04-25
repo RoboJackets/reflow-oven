@@ -1,0 +1,8 @@
+-I.pioenvs//nanoatmega328/Adafruit-GFX
+-I.pioenvs//nanoatmega328/Adafruit_ILI934
+-I.pioenvs//nanoatmega328/FrameworkArduino
+-I.pioenvs//nanoatmega328/FrameworkArduinoVariant
+-I.pioenvs//nanoatmega328/MAX6675
+-I.pioenvs//nanoatmega328/SPI
+-I.pioenvs//nanoatmega328/Touch-Screen
+-DARDUINO=100

@@ -34,3 +34,7 @@
 
 * Mac Stuff
 *.DS_Store
+
+# Project Specific
+.pioenvs
+.sconsign.dblite
