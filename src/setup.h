@@ -116,12 +116,13 @@ struct ReflowProfile {
   char* Name;
   int MinStartTemp;
   int Length;
-  ReflowPhase Phases[5];
+  ReflowPhase Phases[6];
 };
 
 
 extern int isHeatOn;
 extern ReflowProfile profile1;
+extern ReflowProfile profile11;
 extern ReflowProfile profile2;
 extern ReflowProfile profile;
 extern uint16_t cFRONT;

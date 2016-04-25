@@ -5,6 +5,7 @@ Button::Button(int x1, int y1, int w1, int h1, String text1) {
 	x = x1; y = y1;
 	w = w1; h = h1;
 	text = text1;
+	txtSize = 2;
 }
 
 void Button::set(int x1, int y1, int w1, int h1, String text1) {

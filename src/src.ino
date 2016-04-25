@@ -14,7 +14,7 @@ void setup() {
     tft.begin();
     tft.setRotation(3); 
     tft.fillScreen(MAROON);
-
+    
     pinMode(heatUp, OUTPUT);
     pinMode(heatDown, OUTPUT);
     heatOn(0);

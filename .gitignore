@@ -26,7 +26,6 @@
 *.exe
 *.out
 *.app
-*.DS_Store
 
 # Sublime Project files
 *.sublime-project
@@ -34,3 +33,7 @@
 
 * Mac Stuff
 *.DS_Store
+
+# Project Specific
+.pioenvs
+.sconsign.dblite

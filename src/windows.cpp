@@ -32,7 +32,7 @@ void mainWindow() {
 	tft.setCursor(graph[0]+3,graph[1]-8);
 	tft.setTextSize(1);
 	tft.println(profile.Name);
-	
+
 	graphProfile(graph[0],graph[1],graph[2],graph[3]);
 
 	// Display Temperature
@@ -71,7 +71,8 @@ void mainWindow() {
 				start(); return;
 			} else if (bProfiles.isPressed(p)) {
 				bProfiles.fill(bPress);
-				profiles(); return;
+				// profiles(); return;
+          return;
 			} else if (bCustom.isPressed(p)) {
 				bCustom.fill(bPress);
 				custom(); return;
@@ -169,7 +170,7 @@ void start() {
 					} else {
 						tft.println("ABOVE MIN START TEMP");
 					}
-					
+
 					tft.setTextColor(cFRONT);
 					delay(1000);
 					tft.fillRect(bYes.x,bYes.y+bYes.h+border,26*10,16,cBACK);
@@ -220,12 +221,13 @@ void run() {
 	double interval = 1; // Update interval in s
 
 	double timeStart = millis();
-	int sumTime = 0;
+
 
 	// Pre-heat stage
 	heatOn(3);
 	double t = double(millis()-timeStart)/1000;
-	double initial = t;
+	int sumTime = 0;
+	// double initial = t;
 
 	double errLast = 0;
 
@@ -234,7 +236,7 @@ void run() {
 
 		//Print phase name
 		tft.setTextSize(1);
-		tft.fillRect(border,tft.height()-border-8, 5*10,8,cBACK);
+		tft.fillRect(border,tft.height()-border-8, 7*10,8,cBACK);
 		tft.setCursor(border,tft.height()-border-8);
 		tft.println(profile.Phases[i].Name);
 
@@ -246,7 +248,7 @@ void run() {
 
 			sumTime += profile.Phases[i].TargetDurationS;
 		} else {
-			time1 = -1;
+			// time1 = -1;
 			temp1 = 0;
 		}
 
@@ -273,7 +275,8 @@ void run() {
 		double stopTime = 0;
 		double initial = t;
 
-		while (t<time2) {
+		// while (t<time2 || (i==0 && getTemp()<temp2)) {
+		while (t<time2 || i==0) {
 			// Check for button update
 			TSPoint p = ts.getPoint();
 			if (p.z > ts.pressureThreshhold) {
@@ -302,6 +305,9 @@ void run() {
 
 			if (t-initial > interval) {
 				double tempSet = m*t+b;
+				if (i==0) {
+					tempSet = temp2;
+				}
 				double temp = getTemp();
 
 				double error = temp - tempSet;
@@ -314,12 +320,12 @@ void run() {
 				}
 
 				// Force heatup for reflow
-				if (i==2 || (i==1 && t>time2-20) || i==0){
+				if (i==3 || (i==2 && t>time2-20) || i==0){
 					heatOn(3);
 				}
 
 				// Force heatoff for cooldown
-				if ((i==3 && t>time1) || i==4) {
+				if ((i==4 && t>time1) || i==5) {
 					heatOn(0);
 				}
 
@@ -329,11 +335,12 @@ void run() {
 					tempOld = temp;
 				}
 
-				tft.setCursor(border,tft.height()-border-8);
+				tft.setCursor(border+24,startH+otherH+border*4+12);
 				tft.setTextSize(1);
-				tft.println("Goal:");
-				tft.fillRect(border+5*6*2,tft.height()-border-8, 5*7,8,cBACK);
-				tft.setCursor(border+5*6*2,tft.height()-border-8);
+				tft.print("Goal: ");
+				// tft.fillRect(border+5*6*2,tft.height()-border-8, 5*7,8,cBACK);
+				tft.fillRect(border+4*7+24,startH+otherH+border*4+12,4*8, 10,cBACK);
+				// tft.setCursor(border+5*6*2,tft.height()-border-8);
 				tft.println(String(int(tempSet)) + " C");
 
 
@@ -362,7 +369,7 @@ void run() {
 			}
 			t = double(millis()-timeStart)/1000;
 			if (i==0) {
-				sumTime += t;
+				sumTime = t;
 			}
 		}
 		if (profile.Phases[i].AlarmOnExit) {
@@ -386,26 +393,26 @@ void run() {
 	}
 }
 
-void profiles() {
-	int otherH = (tft.height()-5*border)/4;
-
-	Button bProfile1 (border,border         ,tft.width()-border*2,otherH,profile1.Name);
-	Button bProfile2 (border,otherH+border*2,tft.width()-border*2,otherH,profile2.Name);
-
-	// Change ReflowProfile profile to selected profile
-	while (true) {
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
-			if (bProfile1.isPressed(p)) {
-				profile = profile1;
-				return;
-			} else if (bProfile2.isPressed(p)) {
-				profile = profile2;
-				return;
-			} 
-      	}
-	}
-}
+//void profiles() {
+//	int otherH = (tft.height()-5*border)/4;
+//
+//	Button bProfile1 (border,border         ,tft.width()-border*2,otherH,profile1.Name);
+//	Button bProfile2 (border,otherH+border*2,tft.width()-border*2,otherH,profile2.Name);
+//
+//	// Change ReflowProfile profile to selected profile
+//	while (true) {
+//		TSPoint p = ts.getPoint();
+//		if (p.z > ts.pressureThreshhold) {
+//			if (bProfile1.isPressed(p)) {
+//				profile = profile1;
+//				return;
+//			} else if (bProfile2.isPressed(p)) {
+//				profile = profile2;
+//				return;
+//			}
+//      	}
+//	}
+//}
 
 void custom() {
 	tft.fillScreen(cBACK);
@@ -460,7 +467,7 @@ void custom() {
 		// Check for button presses
 		TSPoint p = ts.getPoint();
 		if (p.z > 10 && p.z < 1000)
-		{   
+		{
 			if (bSwitchU.isPressed(p)) {
 				if (isHeatOn==0 || isHeatOn==2) {
 					bSwitchU.text = "ON";
@@ -488,7 +495,7 @@ void custom() {
 				delay(200);
 				return;
 			}
-		}  
+		}
 	}
 }
 
@@ -523,7 +530,7 @@ void graphProfile(int x, int y, int w, int h) {
 		tft.drawLine(x-3,y+h-y1,x+3,y+h-y1,cFRONT);
 
 		tft.setTextColor(cFRONT);
-		
+
 		if (i==0) {
 			tft.setTextSize(1);
 
