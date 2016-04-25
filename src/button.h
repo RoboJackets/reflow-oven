@@ -1,5 +1,6 @@
-#include "setup.h"
+#pragma once
 
+#include "setup.h"
 
 class Button {
 	public:
