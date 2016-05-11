@@ -1,18 +1,15 @@
-#include "Arduino.h"
+#pragma once
+
+#include <Arduino.h>
+#include <SPI.h>
 
 #include "max6675.h"
-
-#include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-
 #include "TouchScreen.h"
-
-#pragma once
 
 #define MAX_START_TEMP 80
 #define HEAT_UP_TIME   15
-
 
 //A0  - Temperature Up control
 //A5  - Temperature Down control
