@@ -1,2 +1,4 @@
 all:
-	$(MAKE) -C ./src
+	$(MAKE) -C src
+clean:
+	rm -rf build

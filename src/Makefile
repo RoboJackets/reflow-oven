@@ -56,7 +56,7 @@ CURRENT_DIR       = $(shell basename $(CURDIR))
 
 ### OBJDIR
 ### This is where you put the binaries you just compile using 'make'
-OBJDIR            = $(PROJECT_DIR)/bin/$(BOARD_TAG)/$(CURRENT_DIR)
+OBJDIR            = $(PROJECT_DIR)/build/$(BOARD_TAG)/$(CURRENT_DIR)
 
 ### ARDUINO_LIBS
 ### The arduino libraries to include for use
