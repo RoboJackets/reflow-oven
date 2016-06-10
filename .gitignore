@@ -39,4 +39,4 @@
 .sconsign.dblite
 
 # build results
-bin/
+build/
