@@ -21,7 +21,7 @@ void Button::view(void) {
   tft.println(text);
 }
 
-bool Button::isPressed(TSPoint p) {
+bool Button::isPressed(TS_Point p) {
   p.x = map(p.x, TS_MINY, TS_MAXY, 0, tft.height());
   p.y = map(p.y, TS_MINX, TS_MAXX, 0, tft.width());
   int y1 = p.x;

@@ -37,3 +37,6 @@
 # Project Specific
 .pioenvs
 .sconsign.dblite
+
+# build results
+bin/

@@ -10,6 +10,6 @@ class Button {
 		Button(int,int,int,int,String);
 		void set(int,int,int,int,String);
 		void view();
-		bool isPressed(TSPoint p);
+		bool isPressed(TS_Point pnt);
 		void fill(uint16_t color);
 };

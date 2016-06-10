@@ -47,6 +47,12 @@
 #define heatDown  A0
 #define speaker   3
 
+// Touch screen calibration
+#define TS_MINX 100
+#define TS_MINY 85
+#define TS_MAXX 900
+#define TS_MAXY 900
+
 extern MAX6675 thermocouple;
 #define thermoDO   4
 #define thermoCS   5

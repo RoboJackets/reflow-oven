@@ -1,3 +1,2 @@
 all:
-	mkdir build || true
-	cd build && $(MAKE) -C ../src
+	$(MAKE) -C ./src

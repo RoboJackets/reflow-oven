@@ -1,4 +1,5 @@
 #include "windows.h"
+#include "setup.h"
 
 #define border 10
 #define bPress 0x0760
@@ -64,8 +65,9 @@ void mainWindow() {
    		}
 
    		// Check for button presses
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
+		if (ts.touched()) {
+			TS_Point p = ts.getPoint();
+
 			if (bStart.isPressed(p)) {
 				bStart.fill(bPress);
 				start(); return;
@@ -107,8 +109,9 @@ void settings() {
 		unsigned long currentMillis = millis();
 
 		// Check for button presses
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
+		if (ts.touched()) {
+			TS_Point p = ts.getPoint();
+
 			if (bRestart.isPressed(p)) {
 				bRestart.fill(bPress);
 				heatOn(0);
@@ -151,8 +154,9 @@ void start() {
 
 	while (true) {
 		// Check for button presses
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
+		if (ts.touched()) {
+			TS_Point p = ts.getPoint();
+
 			if (bYes.isPressed(p)) {
 				if (getTemp() < profile.MinStartTemp) {
 					bYes.fill(bPress);
@@ -278,8 +282,9 @@ void run() {
 		// while (t<time2 || (i==0 && getTemp()<temp2)) {
 		while (t<time2 || i==0) {
 			// Check for button update
-			TSPoint p = ts.getPoint();
-			if (p.z > ts.pressureThreshhold) {
+			if (ts.touched()) {
+				TS_Point p = ts.getPoint();
+
 				if (bStop.isPressed(p)) {
 					if (stopTime > 0 && t-stopTime > .2){
 						bStop.fill(bPress);
@@ -383,8 +388,9 @@ void run() {
 	bStop.fill(cBACK);
 
 	while (true) {
-		TSPoint p = ts.getPoint();
-		if (p.z > ts.pressureThreshhold) {
+		if (ts.touched()) {
+			TS_Point p = ts.getPoint();
+
 			if (bStop.isPressed(p)) {
 				bStop.fill(bPress);
 				return;
@@ -401,7 +407,7 @@ void run() {
 //
 //	// Change ReflowProfile profile to selected profile
 //	while (true) {
-//		TSPoint p = ts.getPoint();
+//		TS_Point p = ts.getPoint();
 //		if (p.z > ts.pressureThreshhold) {
 //			if (bProfile1.isPressed(p)) {
 //				profile = profile1;
@@ -465,9 +471,9 @@ void custom() {
 		}
 
 		// Check for button presses
-		TSPoint p = ts.getPoint();
-		if (p.z > 10 && p.z < 1000)
-		{
+		if (ts.touched()) {
+			TS_Point p = ts.getPoint();
+
 			if (bSwitchU.isPressed(p)) {
 				if (isHeatOn==0 || isHeatOn==2) {
 					bSwitchU.text = "ON";
