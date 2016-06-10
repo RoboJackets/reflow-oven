@@ -10,10 +10,6 @@ sudo apt-get install -y git arduino arduino-core libdevice-serialport-perl libya
 # cd into the repo
 cd "$SCRIPT_DIR"
 
-# make sure we have an alias in /dev with the udev rule
-sudo cp 99-ftdi.rules /etc/udev/rules.d/
-sudo /etc/init.d/udev restart
-
 # update library sources
 git submodule update --init
 cd -
