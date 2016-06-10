@@ -2,17 +2,18 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include <Wire.h>
 
 #include "max6675.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-#include "TouchScreen.h"
+#include "Adafruit_FT6206.h"
 
 #define MAX_START_TEMP 80
 #define HEAT_UP_TIME   15
 
 //A0  - Temperature Up control
-//A5  - Temperature Down control
+//A3  - Temperature Down control
 
 //MAX6675
 ///////////
@@ -30,10 +31,8 @@
 //D11 - MOSI
 //D12 - MISO
 //D13 - SCLK
-//A1  - Y+
-//A2  - X+
-//A3  - Y-
-//A4  - X-
+//A4  - SDA
+//A5  - SCL
 //5V  - Vin
 
 ///////////////
@@ -44,7 +43,7 @@
 //A7  - LED:3
 //RST - RST:External
 
-#define heatUp    A5
+#define heatUp    A3
 #define heatDown  A0
 #define speaker   3
 
@@ -61,17 +60,7 @@ extern Adafruit_ILI9341 tft;
 #define TFT_XMAX 320
 #define TFT_YMAX 240
 
-extern TouchScreen ts;
-#define YP A1
-#define XM A4
-#define YM A3
-#define XP A2
-
-// Touch screen calibration
-#define TS_MINX 100
-#define TS_MINY 85
-#define TS_MAXX 900
-#define TS_MAXY 900
+extern Adafruit_FT6206 ts;
 
 #define BLACK       0x0000      /*   0,   0,   0 */
 #define NAVY        0x000F      /*   0,   0, 128 */

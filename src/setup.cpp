@@ -3,8 +3,7 @@
 MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-
-TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+Adafruit_FT6206 ts = Adafruit_FT6206();
 
 ReflowProfile profile = profile11;
 
