@@ -4,3 +4,5 @@
 # Rules for FTDI serial device
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="arduino", MODE="0660", GROUP="plugdev"
 
+# Rules for QinHeng USB-Serial adapter
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="arduino", MODE="0660", GROUP="plugdev"
