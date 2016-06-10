@@ -19,10 +19,11 @@ USER_LIB_PATH    :=  $(PROJECT_DIR)/lib
 ### BOARD_TAG
 ### It must be set to the board you are currently using. (i.e uno, mega2560, etc.)
 BOARD_TAG         = nano328
+# BOARD_SUB   	  = atmega328
 
 ### MONITOR_BAUDRATE
 ### It must be set to Serial baudrate value you are using.
-MONITOR_BAUDRATE  = 9600
+MONITOR_BAUDRATE  = 115200
 
 ### AVR_TOOLS_DIR
 ### Path to the AVR tools directory such as avr-gcc, avr-g++, etc.
@@ -33,6 +34,7 @@ AVR_TOOLS_DIR     = /usr
 ### AVRDUDE
 ### Path to avrdude directory.
 AVRDUDE           = $(shell which avrdude)
+AVRDUDE_CONF 	  = /etc/avrdude.conf
 
 ### CFLAGS_STD
 ### Set the C standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cflags_std)
@@ -48,7 +50,7 @@ CXXFLAGS         += -pedantic -Wall -Wextra
 
 ### MONITOR_PORT
 ### The port your board is connected to. Using an '*' tries all the ports and finds the right one.
-MONITOR_PORT      = /dev/arduino
+MONITOR_PORT      = /dev/ttyUSB*
 
 ### CURRENT_DIR
 ### Do not touch - used for binaries path
