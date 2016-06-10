@@ -32,7 +32,7 @@ AVR_TOOLS_DIR     = /usr
 
 ### AVRDUDE
 ### Path to avrdude directory.
-AVRDUDE          = $(shell which avrdude)
+AVRDUDE           = $(shell which avrdude)
 
 ### CFLAGS_STD
 ### Set the C standard to be used during compilation. Documentation (https://github.com/WeAreLeka/Arduino-Makefile/blob/std-flags/arduino-mk-vars.md#cflags_std)
@@ -64,4 +64,3 @@ ARDUINO_LIBS      = Wire SPI MAX6675-library Adafruit_ILI9341 Adafruit_FT6206_Li
 
 ### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
 include $(ARDMK_DIR)/Arduino.mk
-
