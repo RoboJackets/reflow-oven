@@ -45,10 +45,11 @@ void mainWindow() {
 	long interval = 1000; // Update interval in ms
 
 	while (true) {
-        digitalWrite(13, !digitalRead(13));
-
 		// Update for heat indicator & temperature
 		if(millis() - previousMillis > interval) {
+			// toggle LED
+			digitalWrite(13, !digitalRead(13));
+			
    			previousMillis = millis();
 
    			// Heat indicator
