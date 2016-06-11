@@ -1,6 +1,4 @@
 oven:
-	$(MAKE) -C src
+	platformio run
 oven-prog:
-	$(MAKE) upload -C src
-clean:
-	rm -rf build
+	platformio run --target upload

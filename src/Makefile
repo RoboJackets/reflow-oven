@@ -4,12 +4,13 @@ PROJECT_DIR       = $(realpath $(dir $(CURDIR)))
 
 ### ARDMK_DIR
 ### Path to the Arduino-Makefile directory.
-ARDMK_DIR         = $(PROJECT_DIR)/external/Arduino-Makefile
+# ARDMK_DIR         = $(PROJECT_DIR)/external/Arduino-Makefile
+ARDMK_DIR = /usr/share/arduino
 
 ### ARDUINO_DIR
 ### Path to the Arduino application and resources directory.
-# ARDUINO_DIR       = /usr/share/arduino
-ARDUINO_DIR       = $(PROJECT_DIR)/external/Arduino
+# ARDUINO_DIR       = $(PROJECT_DIR)/external/Arduino
+ARDUINO_DIR       = /usr/share/arduino
 # Switch with line below for OS X:
 #ARDUINO_DIR       = /Applications/Arduino.app/Contents/Java
 
@@ -19,7 +20,8 @@ USER_LIB_PATH    :=  $(PROJECT_DIR)/lib
 
 ### ARDUINO_LIBS
 ### The arduino libraries to include for use
-ARDUINO_LIBS      = MAX6675-library Adafruit_ILI9341 Adafruit_FT6206_Library Adafruit-GFX-Library
+ARDUINO_LIBS     += SPI Wire
+ARDUINO_LIBS     += MAX6675-library Adafruit_ILI9341 Adafruit_FT6206_Library Adafruit-GFX-Library
 # SPI Wire
 
 ### BOARD_TAG
@@ -27,7 +29,7 @@ ARDUINO_LIBS      = MAX6675-library Adafruit_ILI9341 Adafruit_FT6206_Library Ada
 BOARD_TAG         = nano328
 # BOARD_SUB         = atmega328p
 # ARDUINO_VERSION   = 10609
-FORCE_MONITOR_PORT = true
+# FORCE_MONITOR_PORT = true
 
 ### MONITOR_BAUDRATE
 ### It must be set to Serial baudrate value you are using.
@@ -56,7 +58,7 @@ CXXFLAGS_STD      = -std=gnu++11
 ### Flags you might want to set for debugging purpose. Comment to stop.
 # CXXFLAGS         += -pedantic -Wall -Wextra
 # CXXFLAGS         += -g -Os -w
-# CXX_FLAGS        += -g -Os -w -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -mmcu=$(BOARD_SUB)
+CPPFLAGS        += -fno-threadsafe-statics
 # -x c++ -E -CC
 # /usr/bin/avr-g++ -MMD -c
 # -mmcu=atmega328p
@@ -75,7 +77,7 @@ CXXFLAGS_STD      = -std=gnu++11
 
 ### MONITOR_PORT
 ### The port your board is connected to. Using an '*' tries all the ports and finds the right one.
-MONITOR_PORT      = /dev/ttyUSB0
+MONITOR_PORT      = /dev/ttyUSB*
 
 ### CURRENT_DIR
 ### Do not touch - used for binaries path
@@ -87,3 +89,6 @@ OBJDIR            = $(PROJECT_DIR)/build/$(BOARD_TAG)/$(CURRENT_DIR)
 
 ### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
 include $(ARDMK_DIR)/Arduino.mk
+
+# print-%  : ; @echo $* = $($*)
+# allvars: $(foreach v, $(.VARIABLES), $(info $(v) = $($(v))))

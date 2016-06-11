@@ -7,6 +7,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # install deps
 sudo apt-get install -y git arduino arduino-core libdevice-serialport-perl libyaml-perl python-serial
 
+pip install -U platformio
+
 # cd into the repo
 cd "$SCRIPT_DIR"
 

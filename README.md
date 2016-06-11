@@ -3,6 +3,8 @@ Reflow soldering oven firmware using an Arduino Nano and touchscreen LCD
 
 ## Prerequesites
 
+[PlatformIO](http://docs.platformio.org/en/latest/installation.html)
+
 On Ubuntu, simply run the [`setup.sh`](./setup.sh) script to setup your computer up for compiling.
 ```
 # set up all prerequesites
