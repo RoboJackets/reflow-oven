@@ -2,11 +2,8 @@
 
 MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
 
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 Adafruit_FT6206 ts = Adafruit_FT6206();
-
-ReflowProfile profile = profile11;
-
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 //ReflowProfile profile1 =
 //{
@@ -48,6 +45,8 @@ ReflowProfile profile11 =
 //		{ "Cooling",      25,        0,      0,     90,  true  },
 //    }
 //};
+
+ReflowProfile profile = profile11;
 
 int isHeatOn = 0;
 long lastHeat = millis();
