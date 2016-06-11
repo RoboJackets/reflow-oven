@@ -13,3 +13,6 @@
 [submodule "Arduino-Makefile"]
 	path = external/Arduino-Makefile
 	url = https://github.com/sudar/Arduino-Makefile
+[submodule "external/Arduino"]
+	path = external/Arduino
+	url = https://github.com/arduino/Arduino

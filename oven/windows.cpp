@@ -45,6 +45,8 @@ void mainWindow() {
 	long interval = 1000; // Update interval in ms
 
 	while (true) {
+        digitalWrite(13, !digitalRead(13));
+
 		// Update for heat indicator & temperature
 		if(millis() - previousMillis > interval) {
    			previousMillis = millis();
@@ -58,6 +60,7 @@ void mainWindow() {
 
    			// Update temperature display
    			int tempNew = getTemp();
+            Serial.println(tempNew);
    			if (tempOld != tempNew) {
 	   			viewTemp(tft.width()/2+border,startH+border*2+otherH/2);
 				tempOld = tempNew;
