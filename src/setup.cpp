@@ -30,8 +30,8 @@ ReflowProfile profile11 =
          { "Pre-heat",     130,       0,      0,     70,  false },
          { "Pre-heat-2",   140,      70,    100,     80,  false },
          { "Soak",         217,      60,     90,     80,  false },
-         { "Liquidus",     240,      15,     30,     20,  false },
-         { "Reflow",       217,      15,     30,     20,  true  },
+         { "Liquidus",     240,      25,     40,     30,  false },
+         { "Reflow",       217,      25,     35,     30,  true  },
          { "Cooling",      80,        0,      0,     80,  true  },
      }
  };
