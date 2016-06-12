@@ -1,9 +1,9 @@
-[submodule "external/Adafruit_ILI9341"]
-	path = external/Adafruit_ILI9341
+[submodule "lib/Adafruit_ILI9341"]
+	path = lib/Adafruit_ILI9341
 	url = https://github.com/adafruit/Adafruit_ILI9341.git
-[submodule "external/MAX6675-library"]
-	path = external/MAX6675-library
+[submodule "lib/MAX6675-library"]
+	path = lib/MAX6675-library
 	url = https://github.com/adafruit/MAX6675-library.git
-[submodule "external/Touch-Screen-Library"]
-	path = external/Touch-Screen-Library
+[submodule "lib/Touch-Screen-Library"]
+	path = lib/Touch-Screen-Library
 	url = https://github.com/adafruit/Touch-Screen-Library.git
