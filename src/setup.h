@@ -12,7 +12,7 @@
 #define HEAT_UP_TIME   15
 
 //A0  - Temperature Up control
-//A5  - Temperature Down control
+//A3  - Temperature Down control
 
 //MAX6675
 ///////////
@@ -32,8 +32,8 @@
 //D13 - SCLK
 //A1  - Y+
 //A2  - X+
-//A3  - Y-
-//A4  - X-
+//A4  - Y-
+//A5  - X-
 //5V  - Vin
 
 ///////////////
@@ -44,7 +44,7 @@
 //A7  - LED:3
 //RST - RST:External
 
-#define heatUp    A5
+#define heatUp    A3
 #define heatDown  A0
 #define speaker   3
 
@@ -63,8 +63,8 @@ extern Adafruit_ILI9341 tft;
 
 extern TouchScreen ts;
 #define YP A1
-#define XM A4
-#define YM A3
+#define XM A5
+#define YM A4
 #define XP A2
 
 // Touch screen calibration
