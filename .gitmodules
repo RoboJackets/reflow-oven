@@ -1,6 +1,3 @@
-[submodule "external/Adafruit-GFX-Library"]
-	path = external/Adafruit-GFX-Library
-	url = https://github.com/adafruit/Adafruit-GFX-Library.git
 [submodule "external/Adafruit_ILI9341"]
 	path = external/Adafruit_ILI9341
 	url = https://github.com/adafruit/Adafruit_ILI9341.git
