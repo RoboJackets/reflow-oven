@@ -27,11 +27,11 @@ ReflowProfile profile11 =
      "SMD291SNL10", 80, 6,
      {
          //   Zone      Exit(C)   Min(S)  Max(S)  Tgt(S)  Alarm
-         { "Pre-heat",     130,       0,      0,     70,  false },
-         { "Pre-heat-2",   140,      70,    100,     80,  false },
-         { "Soak",         217,      60,     90,     80,  false },
-         { "Liquidus",     240,      25,     40,     30,  false },
-         { "Reflow",       217,      25,     35,     30,  true  },
+         { "Pre-heat",     150,       0,      0,     90,  false },
+         { "Soak",         175,       0,      0,     90,  false },
+         { "Ramp Up",      217,       0,      0,     30,  false },
+         { "Liquidus",     240,       0,      0,     30,  false },
+         { "Reflow",       217,       0,      0,     30,  true  },
          { "Cooling",      80,        0,      0,     80,  true  },
      }
  };
